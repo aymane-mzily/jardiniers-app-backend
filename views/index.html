@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/logout" mb-3">Deconnexion</a>
+<a href="/add" class="btn btn-success btn-lg mb-3">Ajouter Jardinier</a>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prénom</th>
+            <th scope="col">Numéro de téléphone</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Note</th>
+            <th scope="col">Disponiblité</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for gardener in gardeners %}
+        <tr>
+            <th scope="row">{{ gardener.id }}</th>
+            <td>{{ gardener.last_name }}</td>
+            <td>{{ gardener.first_name }}</td>
+            <td>{{ gardener.phone_number }}</td>
+            <td>{{ gardener.price }}</td>
+            <td>{{ gardener.notes }}</td>
+            <td>
+                {% if gardener.availiable %}
+                    Disponible
+                {% else %}
+                    Non Disponible
+                {% endif %}
+            </td>
+            <td>
+                <a href="/gardener/{{ gardener.id }}" class="btn btn-info btn-sm">Modifier</a>  <a href="#" class="delete-gardener btn btn-danger btn-sm" data-id="{{ gardener.id }}">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function(){
+            $('.delete-gardener').click(function(e){
+                e.preventDefault();
+                var gID = $(this).data('id');
+                if(confirm("êtes-vous sûr de vouloir supprimer?")){
+                    $(`<form action="/gardener/delete/${gID}" method="POST"></form>`).appendTo('body').submit();
+                }
+            });
+        });
+    </script>
+{% endblock %}
